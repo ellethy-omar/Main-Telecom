@@ -1,0 +1,23 @@
+{
+    "comment": "It is advised to use from here the running commands from here with out needing to cd into directories",
+    "comment2": "s = start, f = frontend, d = dev, b = backend",
+    "scripts": {
+        "s_f": "cd frontend && npm start",
+        "s_b_gate": "cd backend && npm run start:gate",
+        "d_b_gate": "cd backend && npm run dev:gate",
+        "s_b_auth": "cd backend && npm run start:auth",
+        "d_b_auth": "cd backend && npm run dev:auth",
+        "s_b_doc": "cd backend && npm run start:doc",
+        "d_b_doc": "cd backend && npm run dev:doc",
+        "s_b_con": "cd backend && npm run start:contacts",
+        "d_b_con": "cd backend && npm run dev:contacts",
+        "s_b_cloud": "cd backend && npm run start:cloudinary",
+        "d_b_cloud": "cd backend && npm run dev:cloudinary",
+        "s_b_pro": "cd backend && npm run start:profile",
+        "d_b_pro": "cd backend && npm run dev:profile",
+        "s_b_call": "cd backend && npm run start:call",
+        "d_b_call": "cd backend && npm run dev:call",
+        "s_b_tic": "cd backend && npm run start:ticket",
+        "d_b_tic": "cd backend && npm run dev:ticket"
+    }
+}

@@ -1,0 +1,247 @@
+/api/tickets/getTicketById:
+  get:
+    tags:
+      - Ticket-Service (JWT Required)
+    summary: Get a ticket by its ID
+    parameters:
+      - in: query
+        name: ticketId
+        required: true
+        schema:
+          type: integer
+        example: 12
+    responses:
+      200:
+        description: Ticket found
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Ticket'
+      400:
+        $ref: '#/components/responses/InvalidParameters'
+      404:
+        $ref: '#/components/responses/PropertyNotFound'
+      500:
+        $ref: '#/components/responses/ServerError'
+
+/api/tickets/getTicketByAgentId:
+  get:
+    tags:
+      - Ticket-Service (JWT Required)
+    summary: Get tickets assigned to the authenticated agent
+    responses:
+      200:
+        description: Tickets retrieved
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Ticket'
+      500:
+        $ref: '#/components/responses/ServerError'
+
+
+/api/tickets/getTicketsByContact:
+  get:
+    tags:
+      - Ticket-Service (JWT Required)
+    summary: Get tickets by contact phone number
+    parameters:
+      - in: query
+        name: phone
+        required: true
+        schema:
+          type: string
+        example: "+861380013800"
+    responses:
+      200:
+        description: Tickets retrieved for contact
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Ticket'
+      400:
+        $ref: '#/components/responses/InvalidParameters'
+      500:
+        $ref: '#/components/responses/ServerError'
+
+/api/tickets/getTicketsByStatusForCertainAgent:
+  get:
+    tags:
+      - Ticket-Service (JWT Required)
+    summary: Get tickets assigned to the current agent filtered by status
+    parameters:
+      - in: query
+        name: status
+        required: true
+        schema:
+          type: string
+          enum: [open, in_progress, resolved, closed]
+        example: "open"
+    responses:
+      200:
+        description: Tickets retrieved
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Ticket'
+      400:
+        $ref: '#/components/responses/InvalidParameters'
+      500:
+        $ref: '#/components/responses/ServerError'
+
+
+/api/tickets/getTicketsByStatus:
+  get:
+    tags:
+      - Ticket-Service (JWT Required)
+    summary: Get tickets filtered by status (admin or analytics use)
+    parameters:
+      - in: query
+        name: status
+        required: true
+        schema:
+          type: string
+          enum: [open, in_progress, resolved, closed]
+        example: "resolved"
+    responses:
+      200:
+        description: Tickets retrieved
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Ticket'
+      400:
+        $ref: '#/components/responses/InvalidParameters'
+      500:
+        $ref: '#/components/responses/ServerError'
+
+/api/tickets/createTicket:
+  post:
+    tags:
+      - Ticket-Service (JWT Required)
+    summary: Create a new ticket
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - phone
+              - title
+              - description
+            properties:
+              phone:
+                type: string
+                example: "+861380013800"
+              title:
+                type: string
+                example: "Wrong billing"
+              description:
+                type: string
+                example: "Charged twice for the same service."
+              status:
+                type: string
+                enum: [open, in_progress, resolved, closed]
+                example: "open"
+    responses:
+      201:
+        description: Ticket created successfully
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Ticket'
+      400:
+        $ref: '#/components/responses/InvalidParameters'
+      404:
+        $ref: '#/components/responses/PropertyNotFound'
+      500:
+        $ref: '#/components/responses/ServerError'
+
+/api/tickets/updateTicket:
+  put:
+    tags:
+      - Ticket-Service (JWT Required)
+    summary: Update an existing ticket by ID
+    parameters:
+      - in: query
+        name: ticketId
+        required: true
+        schema:
+          type: integer
+        example: 17
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - title
+              - description
+            properties:
+              title:
+                type: string
+                example: "Billing confusion"
+              description:
+                type: string
+                example: "Client claims double charge."
+              status:
+                type: string
+                enum: [open, in_progress, resolved, closed]
+                example: "in_progress"
+    responses:
+      200:
+        description: Ticket updated successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+      400:
+        $ref: '#/components/responses/InvalidParameters'
+      404:
+        $ref: '#/components/responses/PropertyNotFound'
+      500:
+        $ref: '#/components/responses/ServerError'
+
+/api/tickets/deleteTicket:
+  delete:
+    tags:
+      - Ticket-Service (JWT Required)
+    summary: Delete a ticket by ID
+    parameters:
+      - in: query
+        name: ticketId
+        required: true
+        schema:
+          type: integer
+        example: 17
+    responses:
+      200:
+        description: Ticket deleted successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+      400:
+        $ref: '#/components/responses/InvalidParameters'
+      404:
+        $ref: '#/components/responses/PropertyNotFound'
+      500:
+        $ref: '#/components/responses/ServerError'

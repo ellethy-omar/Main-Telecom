@@ -1,0 +1,32 @@
+/api/calls/webhook/3cx:
+  post:
+    summary: 3CX Webhook Endpoint
+    description: Receives call start and end events from 3CX phone system
+    tags:
+      - 3CX-Integration (No JWT Required)
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            oneOf:
+              - $ref: '#/components/schemas/CallStartWebhook'
+              - $ref: '#/components/schemas/CallEndWebhook'
+    responses:
+      '200':
+        description: Webhook processed successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                contact:
+                  $ref: '#/components/schemas/Contact'
+      '400':
+        description: Bad request
+      '404':
+        description: Contact not found (for CallStart)
+      '500':
+        description: Internal server error

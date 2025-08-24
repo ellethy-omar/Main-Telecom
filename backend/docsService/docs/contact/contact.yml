@@ -1,0 +1,260 @@
+/api/contacts/search:
+  get:
+    tags:
+      - Contact-Service (JWT Required)
+    summary: Search contact by phone number for 3CX
+    parameters:
+      - name: phoneNumber
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: displayName
+        in: query
+        required: false
+        schema:
+          type: string
+    responses:
+      200:
+        description: Contact search result
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                found:
+                  type: boolean
+                message:
+                  type: string
+                phoneNumber:
+                  type: string
+                contact:
+                  $ref: '#/components/schemas/Contact'
+      400:
+        $ref: '#/components/responses/InvalidParameters'
+      500:
+        $ref: '#/components/responses/ServerError'
+      503:
+        $ref: '#/components/responses/ServiceUnavailable'
+
+/api/contacts/getAllContacts:
+  get:
+    tags:
+      - Contact-Service (JWT Required)
+    summary: Get all contacts
+    responses:
+      200:
+        description: A list of all contacts
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Contact'
+      500:
+        $ref: '#/components/responses/ServerError'
+      503:
+        $ref: '#/components/responses/ServiceUnavailable'
+
+/api/contacts/createContact:
+  post:
+    tags:
+      - Contact-Service (JWT Required)
+    summary: Create a new contact
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              phone:
+                type: string
+                example: "+861380013800"
+              firstName:
+                type: string
+                example: "Li"
+              lastName:
+                type: string
+                example: "Wei"
+              email:
+                type: string
+                format: email
+                example: "li.wei@china-tech.cn"
+              company:
+                type: string
+                example: "Beijing AI Lab"
+              position:
+                type: string
+                example: "Research Director"
+              notes:
+                type: string
+                example: "Potential investor"
+    responses:
+      201:
+        description: Contact created successfully
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Contact'
+      400:
+        $ref: '#/components/responses/InvalidParameters'
+      500:
+        $ref: '#/components/responses/ServerError'
+      503:
+        $ref: '#/components/responses/ServiceUnavailable'
+
+/api/contacts/updateContact/{phone}:
+  put:
+    tags:
+      - Contact-Service (JWT Required)
+    summary: Update a contact by phone
+    parameters:
+      - name: phone
+        in: path
+        required: true
+        schema:
+          type: string
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              firstName:
+                type: string
+                example: "Li"
+              lastName:
+                type: string
+                example: "Wei"
+              email:
+                type: string
+                format: email
+                example: "li.wei@china-tech.cn"
+              company:
+                type: string
+                example: "Beijing AI Lab"
+              position:
+                type: string
+                example: "Research Director"
+              notes:
+                type: string
+                example: "Potential investor"
+    responses:
+      200:
+        description: Contact updated successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "Contact updated successfully"
+      400:
+        $ref: '#/components/responses/InvalidParameters'
+      404:
+        $ref: '#/components/responses/PropertyNotFound'
+      500:
+        $ref: '#/components/responses/ServerError'
+      503:
+        $ref: '#/components/responses/ServiceUnavailable'
+
+/api/contacts/updateContactNotes/{phone}:
+  patch:
+    tags:
+      - Contact-Service (JWT Required)
+    summary: Update only the notes field of a contact
+    parameters:
+      - name: phone
+        in: path
+        required: true
+        schema:
+          type: string
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              notes:
+                type: string
+    responses:
+      200:
+        description: Notes updated successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "Contact Notes updated successfully"
+      400:
+        $ref: '#/components/responses/InvalidParameters'
+      404:
+        $ref: '#/components/responses/PropertyNotFound'
+      500:
+        $ref: '#/components/responses/ServerError'
+      503:
+        $ref: '#/components/responses/ServiceUnavailable'
+
+/api/contacts/deleteContact/{phone}:
+  delete:
+    tags:
+      - Contact-Service (JWT Required)
+    summary: Delete a contact by phone
+    parameters:
+      - name: phone
+        in: path
+        required: true
+        schema:
+          type: string
+    responses:
+      200:
+        description: Contact deleted successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "Contact deleted successfully"
+      400:
+        $ref: '#/components/responses/InvalidParameters'
+      404:
+        $ref: '#/components/responses/PropertyNotFound'
+      500:
+        $ref: '#/components/responses/ServerError'
+      503:
+        $ref: '#/components/responses/ServiceUnavailable'
+
+/api/contacts/getContactByPhone/{phone}:
+  get:
+    tags:
+      - Contact-Service (JWT Required)
+    summary: Get a contact by phone
+    parameters:
+      - name: phone
+        in: path
+        required: true
+        schema:
+          type: string
+    responses:
+      200:
+        description: Contact fetched successfully
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Contact'
+      400:
+        $ref: '#/components/responses/InvalidParameters'
+      404:
+        $ref: '#/components/responses/PropertyNotFound'
+      500:
+        $ref: '#/components/responses/ServerError'
+      503:
+        $ref: '#/components/responses/ServiceUnavailable'

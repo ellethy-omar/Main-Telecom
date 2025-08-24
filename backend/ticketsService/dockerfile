@@ -1,0 +1,23 @@
+# Use the official Node.js image
+FROM node:20-slim
+
+# Set working directory
+WORKDIR /app/ticketsService
+
+# Get shared function remeber thaat the context is at the root of the project not next to this docker file.
+COPY shared ../shared
+
+# Copy package.json and package-lock.json
+COPY ticketsService/package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy the rest of the app
+COPY ticketsService/server.js ./
+COPY ticketsService/controllers ./controllers
+COPY ticketsService/models ./models
+COPY ticketsService/routes ./routes
+
+# Start the app
+CMD ["node", "server.js"]

@@ -1,0 +1,21 @@
+# Use the official Node.js image
+FROM node:20-slim
+
+# Set working directory
+WORKDIR /app/docsService
+
+# Get shared function
+COPY shared ../shared
+
+# Copy package.json and package-lock.json
+COPY docsService/package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy the rest of the app
+COPY docsService/server.js ./
+COPY docsService/docs ./docs
+
+# Start the app
+CMD ["node", "server.js"]

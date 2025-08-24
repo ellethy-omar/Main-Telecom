@@ -1,0 +1,109 @@
+/api/cloudinary/uploadProfileImage:
+  post:
+    tags:
+      - Cloudinary-Service (JWT Required)
+    summary: Upload a profile image for the agent
+    description: >
+      Uploads a profile image using `multipart/form-data`. The image is sent to Cloudinary, 
+      and the image URL is published via Redis with action `upload`.
+    security:
+      - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            required:
+              - image
+            properties:
+              image:
+                type: string
+                format: binary
+                description: Image file to be uploaded.
+              oldImageUrl:
+                type: string
+                description: Optional. Old image URL to be replaced (used for cleanup).
+    responses:
+      200:
+        description: Image uploaded successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                imageURL:
+                  type: string
+                  format: uri
+                  example: https://res.cloudinary.com/demo/image/upload/v1626112345/sample.jpg
+                publicId:
+                  type: string
+                  example: agent_profiles/abcd1234xyz
+                message:
+                  type: string
+                  example: Profile image uploaded successfully
+      400:
+        description: No file provided
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error:
+                  type: string
+                  example: No file provided
+      500:
+        $ref: '#/components/responses/ServerError'
+      401:
+        $ref: '#/components/responses/ForbiddenError'
+
+/api/cloudinary/deleteProfileImage:
+  delete:
+    tags:
+      - Cloudinary-Service (JWT Required)
+    summary: Delete the agent's profile image
+    description: >
+      Deletes an image from Cloudinary using its `publicId`. A Redis event is published with action `delete`.
+    security:
+      - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - publicId
+            properties:
+              publicId:
+                type: string
+                description: Cloudinary public ID of the image to delete.
+                example: agent_profiles/abcd1234xyz
+    responses:
+      200:
+        description: Image deleted successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: Image deleted successfully
+      400:
+        description: Missing parameters
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error:
+                  type: string
+                  example: Public ID and Agent ID are required
+      500:
+        $ref: '#/components/responses/ServerError'
+      401:
+        $ref: '#/components/responses/ForbiddenError'

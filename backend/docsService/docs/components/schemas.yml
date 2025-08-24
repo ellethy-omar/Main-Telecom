@@ -1,0 +1,216 @@
+Agent:
+  type: object
+  properties:
+    agentId:
+      type: number
+      example: 10
+    firstName:
+      type: string
+      maxLength: 50
+      example: "John"
+    lastName:
+      type: string
+      maxLength: 50
+      example: "Doe"
+    email:
+      type: string
+      format: email
+      example: "john.doe@example.com"
+    phone:
+      type: string
+      example: "+1234567890"
+    imageUrl:
+      type: string
+      format: uri
+      example: "https://example.com/images/agent-profile.jpg"
+    createdAt:
+      type: string
+      format: date-time
+      example: "2025-07-30T08:25:51.000Z"
+    updatedAt:
+      type: string
+      format: date-time
+      example: "2025-07-30T08:25:51.000Z"
+
+Contact:
+  type: object
+  properties:
+    phone:
+      type: string
+      example: "+861380013800"
+    firstName:
+      type: string
+      example: "Li"
+    lastName:
+      type: string
+      example: "Wei"
+    email:
+      type: string
+      format: email
+      example: "li.wei@china-tech.cn"
+    company:
+      type: string
+      example: "Beijing AI Lab"
+    position:
+      type: string
+      example: "Research Director"
+    notes:
+      type: string
+      example: "Potential investor"
+    createdAt:
+      type: string
+      format: date-time
+      example: "2025-07-30T08:25:51.000Z"
+    updatedAt:
+      type: string
+      format: date-time
+      example: "2025-07-30T08:25:51.000Z"
+
+Ticket:
+  type: object
+  properties:
+    ticketId:
+      type: integer
+      example: 8
+    phone:
+      type: string
+      example: "+861380013800"
+      description: "Foreign key referencing Contact.phone"
+    title:
+      type: string
+      example: "Wrong billing"
+    description:
+      type: string
+      example: "Charged twice for the same service."
+    status:
+      type: string
+      enum:
+        - open
+        - in_progress
+        - resolved
+        - closed
+      example: "open"
+    createdAt:
+      type: string
+      format: date-time
+      example: "2025-07-30T08:25:51.000Z"
+    resolvedAt:
+      type: string
+      format: date-time
+      nullable: true
+      example: "2025-08-01T09:00:00.000Z"
+    assignedAgentId:
+      type: integer
+      example: 5
+      description: "Foreign key referencing Agent.agentId"
+
+Call:
+  type: object
+  properties:
+    callId:
+      type: string
+      example: "call_123456789"
+      description: "Unique call identifier from 3CX"
+    phone:
+      type: string
+      example: "+1234567890"
+      description: "Phone number involved in the call"
+    agentId:
+      type: integer
+      example: 1
+      description: "Agent who handled the call"
+    callDate:
+      type: string
+      format: date-time
+      example: "2024-01-15T10:30:00Z"
+      description: "Call date and time"
+    summary:
+      type: string
+      example: "Customer called about order status"
+      description: "Call summary and notes"
+    durationSeconds:
+      type: integer
+      example: 120
+      description: "Call duration in seconds"
+
+CallStats:
+    type: object
+    properties:
+        totalCalls:
+          type: integer
+          example: 150
+        inboundCalls:
+          type: integer
+          example: 100
+        outboundCalls:
+          type: integer
+          example: 50
+        completedCalls:
+          type: integer
+          example: 120
+        missedCalls:
+          type: integer
+          example: 20
+        avgDuration:
+          type: number
+          format: float
+          example: 180.5
+        totalDuration:
+          type: integer
+          example: 27075
+
+CallStartWebhook:
+      type: object
+      required:
+        - eventType
+        - callId
+        - phoneNumber
+        - timestamp
+      properties:
+        eventType:
+          type: string
+          enum: [CallStart]
+          example: "CallStart"
+          description: "Event type"
+        callId:
+          type: string
+          example: "call_123456789"
+          description: "Unique call identifier"
+        phoneNumber:
+          type: string
+          example: "+1234567890"
+          description: "Phone number of the caller"
+        timestamp:
+          type: string
+          format: date-time
+          example: "2025-08-05T13:00:00Z"
+          description: "Start time of the call"
+
+CallEndWebhook:
+      type: object
+      required:
+        - eventType
+        - callId
+        - phoneNumber
+        - timestamp
+        - duration
+      properties:
+        eventType:
+          type: string
+          enum: [CallEnd]
+          example: "CallEnd"
+          description: "Event type"
+        callId:
+          type: string
+          example: "call_123456789"
+        phoneNumber:
+          type: string
+          example: "+1234567890"
+        timestamp:
+          type: string
+          format: date-time
+          example: "2025-08-05T13:01:05Z"
+        duration:
+          type: integer
+          example: 65
+          description: "Call duration in seconds"

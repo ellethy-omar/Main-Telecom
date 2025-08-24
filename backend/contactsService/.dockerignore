@@ -1,0 +1,4 @@
+node_modules
+contactsService/node_modules
+npm-debug.log
+.env

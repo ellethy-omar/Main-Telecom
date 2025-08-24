@@ -1,0 +1,172 @@
+/api/auth/login:
+  post:
+    tags:
+      - Auth-Service (No JWT required)
+    summary: Login an existing agent
+    description: >
+      Authenticate an existing agent using their email and password.  
+      Returns the agent information (excluding password) and a JWT token if the credentials are valid.
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - email
+              - password
+            properties:
+              email:
+                type: string
+                format: email
+                description: The agent's registered email address.
+                example: john.doe@example.com
+              password:
+                type: string
+                format: password
+                description: The agent's password.
+    responses:
+      200:
+        description: Login successful
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: Login successful
+                token:
+                  type: string
+                  description: JWT token for authenticated access.
+                  example: >-
+                    eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZ2VudElkIjoxLCJpYXQiOjE3NDcxMjg0MDcsImV4cCI6MTc0NzM4NzYwN30.vy3QnxCIN2-x9rj3CS7B1PQLULVvQ8CynwzE6bF6U2M
+                agent:
+                  $ref: '#/components/schemas/Agent'
+      400:
+        $ref: '#/components/responses/InvalidParameters'
+      500:
+        $ref: '#/components/responses/ServerError'
+
+/api/auth/register:
+  post:
+    tags:
+      - Auth-Service (No JWT required)
+    summary: Register a new agent
+    description: >
+      Register a new agent using personal details and a password.  
+      Returns the agent ID and a JWT token upon successful registration.
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - firstName
+              - lastName
+              - phone
+              - email
+              - password
+            properties:
+              firstName:
+                type: string
+                description: Agent's first name.
+                example: John
+              lastName:
+                type: string
+                description: Agent's last name.
+                example: Doe
+              phone:
+                type: string
+                description: Agent's phone number (numeric only).
+                example: "1234567890"
+              email:
+                type: string
+                format: email
+                description: Agent's email address.
+                example: john.doe@example.com
+              password:
+                type: string
+                format: password
+                description: Password for the agent account (minimum 8 characters).
+    responses:
+      201:
+        description: Registration successful
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: Agent registered successfully
+                token:
+                  type: string
+                  description: JWT token for authenticated access.
+                  example: >-
+                    eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZ2VudElkIjoyLCJpYXQiOjE3NDcxMjg0MDcsImV4cCI6MTc0NzM4NzYwN30.NKPLHf6Oyr0h0OOSGmXX3YbFzBD59a9OBj7g5oQotjU
+                agentId:
+                  type: integer
+                  example: 2
+      400:
+        $ref: '#/components/responses/InvalidParameters'
+      500:
+        $ref: '#/components/responses/ServerError'
+
+/api/auth/verifyToken:
+  get:
+    summary: Verify the validity of a JWT token
+    description: Checks whether the provided JWT token is valid and not expired.
+    tags:
+      - Auth-Service (No JWT required)
+    parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+          example: "Bearer <JWT_TOKEN>"
+        description: The JWT token to verify, prefixed with "Bearer "
+    responses:
+      "200":
+        description: Token is valid
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: "Valid token!"
+      "401":
+        description: No token provided
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error:
+                  type: string
+                  example: "No token provided"
+      "403":
+        description: Invalid or expired token
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error:
+                  type: string
+                  example: "Invalid or expired token"
+      "500":
+        $ref: '#/components/responses/ServerError'

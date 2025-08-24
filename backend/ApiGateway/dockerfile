@@ -1,0 +1,25 @@
+# Use the official Node.js image
+FROM node:20-slim
+
+# Set working directory
+WORKDIR /app/ApiGateway
+
+# Get shared function
+COPY shared ../shared
+
+# Copy package.json and package-lock.json
+COPY ApiGateway/package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy the rest of the app
+COPY ApiGateway/server.js ./
+COPY ApiGateway/routes ./routes
+COPY ApiGateway/middleware ./middleware
+
+# Expose the API gateway's port (example: 4123)
+EXPOSE 4123
+
+# Start the app
+CMD ["node", "server.js"]

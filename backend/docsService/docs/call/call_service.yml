@@ -1,0 +1,466 @@
+/api/calls/crud/createCall:
+  post:
+    summary: Create a new call record
+    description: Creates a new call record for the given agent.
+    tags:
+      - Call-Service (JWT Required)
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - phone
+            properties:
+              phone:
+                type: string
+                example: "+1234567890"
+              callDate:
+                type: string
+                format: date-time
+                example: "2024-01-15T10:30:00Z"
+              summary:
+                type: string
+                example: "Customer called about order status"
+              durationSeconds:
+                type: integer
+                example: 120
+    responses:
+      "201":
+        description: Call created successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                data:
+                  $ref: '#/components/schemas/Call'
+                message:
+                  type: string
+                  example: Call created successfully
+      "400":
+        $ref: '#/components/responses/InvalidParameters'
+      "401":
+        $ref: '#/components/responses/UnauthorizedError'
+      "500":
+        $ref: '#/components/responses/ServerError'
+
+/api/calls/crud/getCallById/{id}:
+  get:
+    summary: Get a call by ID
+    description: Retrieves a call record by its unique ID.
+    tags:
+      - Call-Service (JWT Required)
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the call
+    responses:
+      "200":
+        description: Call retrieved successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                data:
+                  $ref: '#/components/schemas/Call'
+      "400":
+        $ref: '#/components/responses/InvalidParameters'
+      "404":
+        $ref: '#/components/responses/PropertyNotFound'
+      "500":
+        $ref: '#/components/responses/ServerError'
+
+/api/calls/crud/getCallsByPhone/{phone}:
+  get:
+    summary: Get calls by phone number
+    description: Retrieves a list of calls for the specified phone number.
+    tags:
+      - Call-Service (JWT Required)
+    parameters:
+      - name: phone
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Phone number to search
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          default: 50
+      - name: offset
+        in: query
+        schema:
+          type: integer
+          default: 0
+    responses:
+      "200":
+        description: Calls retrieved successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                data:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Call'
+                meta:
+                  type: object
+                  properties:
+                    limit:
+                      type: integer
+                    offset:
+                      type: integer
+                    count:
+                      type: integer
+      "400":
+        $ref: '#/components/responses/InvalidParameters'
+      "500":
+        $ref: '#/components/responses/ServerError'
+
+/api/calls/crud/getCallsForMe:
+  get:
+    summary: Get calls for the logged-in agent
+    description: Retrieves a list of calls assigned to the authenticated agent.
+    tags:
+      - Call-Service (JWT Required)
+    parameters:
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          default: 50
+      - name: offset
+        in: query
+        schema:
+          type: integer
+          default: 0
+    responses:
+      "200":
+        description: Calls retrieved successfully
+        content:
+          application/json:
+            example:
+              success: true
+              data:
+                - callId: 4
+                  phone: "+971555014785"
+                  agentId: 5
+                  callDate: "2024-08-09T06:15:00.000Z"
+                  summary: "Swagger Test"
+                  durationSeconds: 480
+                  contactFirstName: "Fatima"
+                  contactLastName: "Al-Zahra"
+                  contactEmail: "fatima.potatoes@emiratemail.ae"
+                  contactCompany: "Desert Solutions"
+                  contactPosition: "Project Lead"
+                  contactNotes: "Updated note: testing updateContact"
+              meta:
+                agentId: 5
+                limit: 50
+                offset: 0
+                count: 1
+      "400":
+        $ref: '#/components/responses/InvalidParameters'
+      "401":
+        $ref: '#/components/responses/UnauthorizedError'
+      "500":
+        $ref: '#/components/responses/ServerError'
+
+/api/calls/crud/getCallsByAgent/{agentId}:
+  get:
+    summary: Get calls by agent ID
+    description: Retrieves a list of calls assigned to the specified agent.
+    tags:
+      - Call-Service (JWT Required)
+    parameters:
+      - name: agentId
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          default: 50
+      - name: offset
+        in: query
+        schema:
+          type: integer
+          default: 0
+    responses:
+      "200":
+        description: Calls retrieved successfully
+        content:
+          application/json:
+            example:
+              success: true
+              data:
+                - callId: 4
+                  phone: "+971555014785"
+                  agentId: 5
+                  callDate: "2024-08-09T06:15:00.000Z"
+                  summary: "Swagger Test"
+                  durationSeconds: 480
+                  contactFirstName: "Fatima"
+                  contactLastName: "Al-Zahra"
+                  contactEmail: "fatima.potatoes@emiratemail.ae"
+                  contactCompany: "Desert Solutions"
+                  contactPosition: "Project Lead"
+                  contactNotes: "Updated note: testing updateContact"
+              meta:
+                agentId: 5
+                limit: 50
+                offset: 0
+                count: 1
+      "400":
+        $ref: '#/components/responses/InvalidParameters'
+      "500":
+        $ref: '#/components/responses/ServerError'
+
+/api/calls/crud/getCallsByDateRange:
+  get:
+    summary: Get calls within a date range
+    description: Retrieves calls that occurred between the specified start and end dates.
+    tags:
+      - Call-Service (JWT Required)
+    parameters:
+      - name: startDate
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date
+      - name: endDate
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          default: 100
+      - name: offset
+        in: query
+        schema:
+          type: integer
+          default: 0
+    responses:
+      "200":
+        description: Calls retrieved successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                data:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Call'
+                meta:
+                  type: object
+                  properties:
+                    startDate:
+                      type: string
+                    endDate:
+                      type: string
+                    limit:
+                      type: integer
+                    offset:
+                      type: integer
+                    count:
+                      type: integer
+      "400":
+        $ref: '#/components/responses/InvalidParameters'
+      "500":
+        $ref: '#/components/responses/ServerError'
+
+/api/calls/crud/searchCallsBySummary:
+  get:
+    summary: Search calls by summary
+    description: Searches for calls whose summary contains the specified term.
+    tags:
+      - Call-Service (JWT Required)
+    parameters:
+      - name: q
+        in: query
+        required: true
+        schema:
+          type: string
+        description: Search term
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          default: 50
+    responses:
+      "200":
+        description: Calls retrieved successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                data:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Call'
+                meta:
+                  type: object
+                  properties:
+                    searchTerm:
+                      type: string
+                    limit:
+                      type: integer
+                    count:
+                      type: integer
+      "400":
+        $ref: '#/components/responses/InvalidParameters'
+      "500":
+        $ref: '#/components/responses/ServerError'
+
+
+/api/calls/crud/updateCallSummary/{id}:
+  put:
+    summary: Update call summary
+    description: Updates the summary of a specific call by its ID.
+    tags:
+      - Call-Service (JWT Required)
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the call
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - summary
+            properties:
+              summary:
+                type: string
+                example: "Customer requested an update on the shipping status"
+    responses:
+      "200":
+        description: Call summary updated successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                data:
+                  $ref: '#/components/schemas/Call'
+                message:
+                  type: string
+                  example: Call summary updated successfully
+      "400":
+        $ref: '#/components/responses/InvalidParameters'
+      "404":
+        $ref: '#/components/responses/PropertyNotFound'
+      "500":
+        $ref: '#/components/responses/ServerError'
+
+/api/calls/crud/getCallsWithoutSummary:
+  get:
+    summary: Get calls without summary
+    description: Retrieves a list of calls that do not have a summary.
+    tags:
+      - Call-Service (JWT Required)
+    parameters:
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          default: 50
+        description: Maximum number of calls to return
+    responses:
+      "200":
+        description: Calls retrieved successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                data:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Call'
+                meta:
+                  type: object
+                  properties:
+                    limit:
+                      type: integer
+                    count:
+                      type: integer
+      "500":
+        $ref: '#/components/responses/ServerError'
+
+/api/calls/crud/deleteCall/{id}:
+  delete:
+    summary: Delete a call
+    description: Deletes a specific call by its ID.
+    tags:
+      - Call-Service (JWT Required)
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The ID of the call
+    responses:
+      "200":
+        description: Call deleted successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: Call deleted successfully
+      "400":
+        $ref: '#/components/responses/InvalidParameters'
+      "404":
+        $ref: '#/components/responses/PropertyNotFound'
+      "500":
+        $ref: '#/components/responses/ServerError'

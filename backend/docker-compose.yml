@@ -1,0 +1,108 @@
+version: '3.9'
+name: mt-training-backend
+
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: redis-server
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    restart: unless-stopped
+    networks:
+      - app-network
+      
+  api-gateway:
+    build:
+      context: .
+      dockerfile: ApiGateway/Dockerfile
+    ports:
+      - "4123:4123"
+    env_file:
+      - ./ApiGateway/.env.deployment
+    networks:
+      - app-network
+
+  contacts-service:
+    build:
+      context: .
+      dockerfile: contactsService/Dockerfile
+    env_file:
+      - ./contactsService/.env
+    environment:
+      - IS_DOCKER=true
+    networks:
+      - app-network
+
+  docs-service:
+    build:
+      context: .
+      dockerfile: docsService/Dockerfile
+    env_file:
+      - ./docsService/.env
+    networks:
+      - app-network
+
+  cloudinary-service:
+    build:
+      context: .
+      dockerfile: cloudinaryService/Dockerfile
+    env_file:
+      - ./cloudinaryService/.env
+    environment:
+      - IS_DOCKER=true
+    networks:
+      - app-network
+
+  profile-service:
+    build:
+      context: .
+      dockerfile: profileService/Dockerfile
+    env_file:
+      - ./profileService/.env
+    environment:
+      - IS_DOCKER=true
+    networks:
+      - app-network
+
+  ticket-service:
+    build:
+      context: .
+      dockerfile: ticketsService/Dockerfile
+    env_file:
+      - ./ticketsService/.env
+    environment:
+      - IS_DOCKER=true
+    networks:
+      - app-network
+
+  call-service:
+    build:
+      context: .
+      dockerfile: callsService/Dockerfile
+    env_file:
+      - ./callsService/.env
+    environment:
+      - IS_DOCKER=true
+    networks:
+      - app-network
+
+  auth-service:
+    build:
+      context: .
+      dockerfile: authService/Dockerfile
+    env_file:
+      - ./authService/.env
+    environment:
+      - IS_DOCKER=true
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  redis_data:

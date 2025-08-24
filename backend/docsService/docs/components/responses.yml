@@ -1,0 +1,65 @@
+UnauthorizedError:
+  description: Authorization token required or invalid
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          error:
+            type: string
+            example: Authorization token required
+
+InvalidParameters:
+  description: A required parameter is missing in the request
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          error:
+            type: string
+            example: A required parameter is missing
+
+PropertyNotFound:
+  description: Property not found or not updated.
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          message:
+            type: string
+            example: Property not found or not updated
+            
+InvalidCredentialsError:
+  description: Invalid login credentials provided
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          error:
+            type: string
+            example: Invalid credentials
+
+ServerError:
+  description: Internal Server Error
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          error:
+            type: string
+            example: "If you see status 5XX tell me, this is not an example"
+
+ServiceUnavailable:
+  description: Service unavailable
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          error:
+            type: string
+            example: "Service unavailablee"

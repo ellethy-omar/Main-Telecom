@@ -1,0 +1,34 @@
+{
+  "name": "microservices",
+  "version": "1.0.0",
+  "description": "A project demonstrating microservices.",
+  "scripts": {
+    "i:gate": "cd ApiGateway && npm install",
+    "i:doc": "cd docsService && npm install",
+    "i:contacts": "cd contactsService && npm install",
+    "i:cloud": "cd cloudinaryService && npm install",
+    "i:pro": "cd profileService && npm install",
+    "i:call": "cd callsService && npm install",
+    "i:tic": "cd ticketsService && npm install",
+    "i:auth": "cd authService && npm install",
+    "start:gate": "cd ApiGateway && npm start",
+    "dev:gate": "cd ApiGateway && npm run dev",
+    "start:auth": "cd authService && npm start",
+    "dev:auth": "cd authService && npm run dev",
+    "start:doc": "cd docsService && npm start",
+    "dev:doc": "cd docsService && npm run dev",
+    "start:contacts": "cd contactsService && npm start",
+    "dev:contacts": "cd contactsService && npm run dev",
+    "start:cloudinary": "cd cloudinaryService && npm start",
+    "dev:cloudinary": "cd cloudinaryService && npm run dev",
+    "start:profile": "cd profileService && npm start",
+    "dev:profile": "cd profileService && npm run dev",
+    "start:call": "cd callsService && npm start",
+    "dev:call": "cd callsService && npm run dev",
+    "start:ticket": "cd ticketsService && npm start",
+    "dev:ticket": "cd ticketsService && npm run dev"
+  },
+  "dependencies": {
+    "net": "^1.0.2"
+  }
+}

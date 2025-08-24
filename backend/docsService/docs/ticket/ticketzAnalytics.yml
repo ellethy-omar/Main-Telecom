@@ -1,0 +1,131 @@
+/api/tickets/getAverageResolutionTime:
+  get:
+    tags:
+      - Ticket-Analytics (JWT Required)
+    summary: Get average resolution time of resolved tickets in hours
+    responses:
+      200:
+        description: Average resolution time retrieved successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                averageResolutionHours:
+                  type: number
+                  format: float
+                  example: 0
+      500:
+        $ref: '#/components/responses/ServerError'
+
+/api/tickets/getCountByStatus:
+  get:
+    tags:
+      - Ticket-Analytics (JWT Required)
+    summary: Get count of tickets grouped by status
+    responses:
+      200:
+        description: Ticket counts per status
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: open
+                  count:
+                    type: integer
+                    example: 5
+      500:
+        $ref: '#/components/responses/ServerError'
+
+/api/tickets/getTicketsPerAgent:
+  get:
+    tags:
+      - Ticket-Analytics (JWT Required)
+    summary: Get number of tickets assigned to each agent
+    responses:
+      200:
+        description: Ticket count per agent
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  agentId:
+                    type: integer
+                    example: 1
+                  agentName:
+                    type: string
+                    example: "Abo Bakr Hassan"
+                  totalTickets:
+                    type: integer
+                    example: 4
+      500:
+        $ref: '#/components/responses/ServerError'
+
+/api/tickets/getUnresolvedAging:
+  get:
+    tags:
+      - Ticket-Analytics (JWT Required)
+    summary: Get number of open or in-progress tickets per agent
+    responses:
+      200:
+        description: Open or in-progress ticket count per agent
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  agentId:
+                    type: integer
+                    example: 1
+                  agentName:
+                    type: string
+                    example: "Abo Bakr Hassan"
+                  totalOpenOrInProgressTickets:
+                    type: integer
+                    example: 4
+      500:
+        $ref: '#/components/responses/ServerError'
+
+/api/tickets/getTicketsOpenPerAgent:
+  get:
+    tags:
+      - Ticket-Analytics (JWT Required)
+    summary: Get list of unresolved (open or in-progress) tickets with aging info
+    responses:
+      200:
+        description: List of unresolved tickets and their age in hours
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  ticketId:
+                    type: integer
+                    example: 1
+                  title:
+                    type: string
+                    example: "Website down"
+                  status:
+                    type: string
+                    example: "open"
+                  createdAt:
+                    type: string
+                    format: date-time
+                    example: "2025-08-01T08:47:40.000Z"
+                  hoursOpen:
+                    type: number
+                    example: 2
+      500:
+        $ref: '#/components/responses/ServerError'

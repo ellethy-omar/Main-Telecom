@@ -1,0 +1,49 @@
+openapi: 3.0.0
+
+info:
+  title: Main Telecom CRM
+  version: 1.0.0
+  description: |
+    This is the base OpenAPI specification for Main Telecom CRM.
+    Will comply with the standard HTTP status code, and here are courses for studying.
+    References:
+    - [HTTP Status Code Reference](https://restfulapi.net/http-status-codes/)
+    - [MERN Tech Stack Course](https://www.youtube.com/playlist?list=PL4cUxeGkcC9iJ_KkrkBZWZRHVwnzLIoUE)
+    - [MERN Authentication Course](https://www.youtube.com/playlist?list=PL4cUxeGkcC9g8OhpOZxNdhXggFz2lOuCT)
+
+# General tag definitions
+tags:
+  - name: Auth-Service (No JWT required)
+    description: Endpoints that do not require a JWT, like login or register
+  - name: Profile-Service (JWT required)
+    description: Endpoints related to agent profile management related APIs
+  - name: Cloudinary-Service (JWT Required)
+    description: Endpoints related to image management related APIs
+  - name: Contact-Service (JWT Required)
+    description: Endpoints related to contact management related APIs
+  - name: Ticket-Service (JWT Required)
+    description: Endpoints related to Ticket management related APIs
+  - name: Ticket-Analytics (JWT Required)
+    description: Endpoints related to Ticket analytics related APIs
+  - name: Call-Service (JWT Required)
+    description: Endpoints related to Call management related APIs
+  - name: Call-Analytics (JWT Required)
+    description: Endpoints related to Call analytics related APIs
+  - name: 3CX-Integration (No JWT Required)
+    description: Endpoints for 3CX phone system integration (webhooks and contact lookup)
+    
+# Global JWT requirement, it is not required for the Authentication Service, I
+# I manually remove it from the Authentication Service endpoints with JS
+security:
+  - bearerAuth: []
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+servers:
+  - url: http://localhost:4123
+    description: Local development server

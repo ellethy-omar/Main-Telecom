@@ -1,0 +1,347 @@
+/api/calls/analytics/getAgentStats/{agentId}:
+  get:
+    summary: Get statistics for a specific agent
+    description: Retrieves call statistics for a specific agent within the given date range.
+    tags:
+      - Call-Analytics (JWT Required)
+    parameters:
+      - name: agentId
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: Unique identifier of the agent
+      - name: startDate
+        in: query
+        schema:
+          type: string
+          format: date
+        description: Start date for the statistics (YYYY-MM-DD)
+      - name: endDate
+        in: query
+        schema:
+          type: string
+          format: date
+        description: End date for the statistics (YYYY-MM-DD)
+    responses:
+      "200":
+        description: Agent statistics retrieved successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                data:
+                  type: object
+                  properties:
+                    totalCalls:
+                      type: integer
+                      example: 120
+                    averageDuration:
+                      type: number
+                      format: float
+                      example: 4.5
+                    missedCalls:
+                      type: integer
+                      example: 5
+      "400":
+        $ref: '#/components/responses/InvalidParameters'
+      "404":
+        $ref: '#/components/responses/PropertyNotFound'
+      "500":
+        $ref: '#/components/responses/ServerError'
+
+/api/calls/analytics/getDailyCallVolume:
+  get:
+    summary: Get daily call volume
+    description: Retrieves the total number of calls per day within the specified date range.
+    tags:
+      - Call-Analytics (JWT Required)
+    parameters:
+      - name: startDate
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date
+        description: Start date for the analysis (YYYY-MM-DD)
+      - name: endDate
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date
+        description: End date for the analysis (YYYY-MM-DD)
+    responses:
+      "200":
+        description: Daily call volume retrieved successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      date:
+                        type: string
+                        format: date
+                        example: "2025-08-01"
+                      callCount:
+                        type: integer
+                        example: 42
+      "400":
+        $ref: '#/components/responses/InvalidParameters'
+      "500":
+        $ref: '#/components/responses/ServerError'
+
+/api/calls/analytics/getCallFrequencyByPhone:
+  get:
+    summary: Get call frequency by phone number
+    description: Retrieves the number of calls per phone number within the specified date range.
+    tags:
+      - Call-Analytics (JWT Required)
+    parameters:
+      - name: startDate
+        in: query
+        schema:
+          type: string
+          format: date
+        description: Start date for the analysis (YYYY-MM-DD)
+      - name: endDate
+        in: query
+        schema:
+          type: string
+          format: date
+        description: End date for the analysis (YYYY-MM-DD)
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          default: 50
+        description: Maximum number of phone records to retrieve
+    responses:
+      "200":
+        description: Call frequency retrieved successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      phoneNumber:
+                        type: string
+                        example: "+15551234567"
+                      callCount:
+                        type: integer
+                        example: 15
+      "400":
+        $ref: '#/components/responses/InvalidParameters'
+      "500":
+        $ref: '#/components/responses/ServerError'
+
+/api/calls/analytics/getHourlyCallDistribution:
+  get:
+    summary: Get hourly call distribution
+    description: Retrieves the number of calls received in each hour of the day.
+    tags:
+      - Call-Analytics (JWT Required)
+    parameters:
+      - name: date
+        in: query
+        schema:
+          type: string
+          format: date
+        description: Date to analyze (YYYY-MM-DD). If omitted, retrieves aggregated data.
+    responses:
+      "200":
+        description: Hourly call distribution retrieved successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      hour:
+                        type: integer
+                        example: 14
+                      callCount:
+                        type: integer
+                        example: 28
+      "400":
+        $ref: '#/components/responses/InvalidParameters'
+      "500":
+        $ref: '#/components/responses/ServerError'
+
+/api/calls/analytics/getTopAgentsByVolume:
+  get:
+    summary: Get top agents by call volume
+    description: Retrieves the top agents ranked by number of calls handled within the specified date range.
+    tags:
+      - Call-Analytics (JWT Required)
+    parameters:
+      - name: startDate
+        in: query
+        schema:
+          type: string
+          format: date
+        description: Start date for the analysis (YYYY-MM-DD)
+      - name: endDate
+        in: query
+        schema:
+          type: string
+          format: date
+        description: End date for the analysis (YYYY-MM-DD)
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          default: 10
+        description: Maximum number of agents to retrieve
+    responses:
+      "200":
+        description: Top agents retrieved successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      agentId:
+                        type: integer
+                        example: 123
+                      agentName:
+                        type: string
+                        example: "Jane Doe"
+                      callCount:
+                        type: integer
+                        example: 87
+      "400":
+        $ref: '#/components/responses/InvalidParameters'
+      "500":
+        $ref: '#/components/responses/ServerError'
+
+/api/calls/analytics/getCallDurationTrend:
+  get:
+    summary: Get call duration trend
+    description: Retrieves the average call duration trend over a given period.
+    tags:
+      - Call-Analytics (JWT Required)
+    parameters:
+      - name: startDate
+        in: query
+        schema:
+          type: string
+          format: date
+        description: Start date for the analysis (YYYY-MM-DD)
+      - name: endDate
+        in: query
+        schema:
+          type: string
+          format: date
+        description: End date for the analysis (YYYY-MM-DD)
+    responses:
+      "200":
+        description: Call duration trend retrieved successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      date:
+                        type: string
+                        format: date
+                        example: "2025-08-01"
+                      averageDuration:
+                        type: number
+                        format: float
+                        example: 5.4
+      "400":
+        $ref: '#/components/responses/InvalidParameters'
+      "500":
+        $ref: '#/components/responses/ServerError'
+
+/api/calls/analytics/getSystemStats:
+  get:
+    summary: Get system-wide call statistics
+    description: Retrieves overall system statistics for calls within the specified date range.
+    tags:
+      - Call-Analytics (JWT Required)
+    parameters:
+      - name: startDate
+        in: query
+        schema:
+          type: string
+          format: date
+        description: Start date for the statistics (YYYY-MM-DD)
+      - name: endDate
+        in: query
+        schema:
+          type: string
+          format: date
+        description: End date for the statistics (YYYY-MM-DD)
+    responses:
+      "200":
+        description: System statistics retrieved successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                data:
+                  type: object
+                  properties:
+                    totalCalls:
+                      type: integer
+                      example: 1240
+                    averageCallDuration:
+                      type: number
+                      format: float
+                      example: 5.4
+                    missedCalls:
+                      type: integer
+                      example: 32
+      "400":
+        $ref: '#/components/responses/InvalidParameters'
+      "500":
+        $ref: '#/components/responses/ServerError'

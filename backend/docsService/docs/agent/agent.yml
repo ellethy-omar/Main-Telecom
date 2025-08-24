@@ -1,0 +1,73 @@
+/api/profile/getAgentProfile:
+  get:
+    tags:
+      - Profile-Service (JWT required)
+    summary: Get the authenticated agent's profile. Just send the jwt.
+    responses:
+      200:
+        description: Successfully retrieved agent profile.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                agent:
+                  $ref: '#/components/schemas/Agent'
+      500:
+        $ref: '#/components/responses/ServerError'
+      401:
+        $ref: '#/components/responses/UnauthorizedError'
+      404:   
+        $ref: '#/components/responses/PropertyNotFound'
+
+/api/profile/updateAgentProfile:
+  put:
+    tags:
+      - Profile-Service (JWT required)
+    summary: Update the authenticated agent's profile. Requires JWT and body fields.
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - firstName
+              - lastName
+              - email
+              - phone
+            properties:
+              firstName:
+                type: string
+                example: John
+              lastName:
+                type: string
+                example: Doe
+              email:
+                type: string
+                format: email
+                example: john.doe@example.com
+              phone:
+                type: string
+                example: "+1234567890"
+    responses:
+      200:
+        description: Agent updated successfully.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: Agent updated successfully
+                agent:
+                  $ref: '#/components/schemas/Agent'
+      400:
+        $ref: '#/components/responses/InvalidParameters'
+      404:   
+        $ref: '#/components/responses/PropertyNotFound'
+      500:
+        $ref: '#/components/responses/ServerError'
+      401:
+        $ref: '#/components/responses/UnauthorizedError'

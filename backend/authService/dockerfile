@@ -1,0 +1,25 @@
+# Use the official Node.js image
+FROM node:20-slim
+
+# Set working directory
+WORKDIR /app/authService
+
+# Get shared function
+COPY shared ../shared
+
+# Copy package.json and package-lock.json
+COPY authService/package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy the rest of the app
+COPY authService/server.js ./
+COPY authService/routes ./routes
+COPY authService/middleware ./middleware
+COPY authService/controllers ./controllers
+COPY authService/models ./models
+
+
+# Start the app
+CMD ["node", "server.js"]

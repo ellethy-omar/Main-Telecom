@@ -1,0 +1,24 @@
+# Use the official Node.js image
+FROM node:20-slim
+
+# Set working directory
+WORKDIR /app/profileService
+
+# Get shared function
+COPY shared ../shared
+
+# Copy package.json and package-lock.json
+COPY profileService/package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy the rest of the app
+COPY profileService/server.js ./
+COPY profileService/routes ./routes
+COPY profileService/models ./models
+COPY profileService/controllers ./controllers
+COPY profileService/utils ./utils
+
+# Start the app
+CMD ["node", "server.js"]
